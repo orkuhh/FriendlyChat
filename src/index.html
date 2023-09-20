@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+    <title>FriendlyChat</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="titlebar.css" />
+</head>
+<body>
+    <header id="titlebar">
+        <div id="drag-region">
+            <div id="window-title">
+                <span>FriendlyChat</span>
+            </div>
+            <div id="window-controls">
+                <div class="button" id="min-button"></div>
+                <div class="button" id="max-button"></div>
+                <div class="button" id="restore-button"></div>
+                <div class="button" id="close-button"></div>
+            </div>
+        </div>
+        <div class="form-header">
+            <div class="action-button" id="clear-chat">Clear chat</div>
+            <div class="action-button" id="change-model">Change model</div>
+            
+        
+            <div id="resources">
+                <div id="cpu" class="resource-item">
+                    <div class="text info">CPU: --%, -- cores</div>
+                    <div class="bar">
+                        <div class="bar-inner"></div>
+                    </div>
+                </div>
+                <div id="ram" class="resource-item">
+                    <div class="text info">RAM: --GB/--GB</div>
+                    <div class="bar">
+                        <div class="bar-inner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="main">
+        <div id="feed">
+            <ul id="messages">
+                <!-- Begin placeholder chat -->
+                <div id="feed-placeholder-friendlychat">
+                    <h1 class="logo">FriendlyChat</h1>
+                    <div class="columns">
+                        <div class="column">
+                            <h3>Examples</h3>
+                            <button class="card">"What are some healthy breakfast options?" →</button>
+                            <button class="card">"Recommend a book for learning web development." →</button>
+                            <button class="card">"Tell me a joke about computer programming." →</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of placeholder chat -->
+            </ul>
+            <div id="bottom"></div>
+            <form id="form" action="">
+                <div class="input-container">
+                    <div class="loading hidden info"></div>
+                    <div class="input-field">
+                        <textarea id="input" maxlength="2048" rows="1" placeholder="Enter a message..."></textarea>
+                        <button id="clear"></button>
+                        <button id="autocomplete"></button>
+                        <button id="stop"></button>
+                    </div>
+                </div>
+                <div class="info">TIP: shift + enter for multiple lines</div>
+            </form>
+        </div>
+    </div>
+    <div id="path-dialog-bg" class="dialog-bg hidden">
+        <div class="dialog-box">
+            <div class="dialog-title">
+                <h3>Couldn't load model</h3>
+            </div>
+            <div id="path-dialog" class="dialog-content">
+                <p>Enter the filepath for a LLaMA model.</p>
+                <p>You can change the model type in settings.</p>
+                <div style="display: flex; gap: 8px">
+                    <input type="text" />
+                    <button class="primary"></button>
+                </div>
+                <p class="error-text" style="display: none">Invalid file path</p>
+            </div>
+            <div class="dialog-button">
+                <button class="secondary">Cancel</button>
+                <button class="primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <div id="snackbar" class="hidden"></div>
+	<script src="socket.io.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>
