@@ -17,9 +17,9 @@ function createWindow() {
 			nodeIntegration: true,
 			contextIsolation: false,
 			enableRemoteModule: true,
-			devTools: false
+			devTools: true
 		},
-		titleBarStyle: "hidden",
+		titleBarStyle: "show",
 
 	});
 	require("@electron/remote/main").enable(win.webContents);
@@ -27,7 +27,7 @@ function createWindow() {
 	win.loadFile(path.resolve(__dirname, "src", "index.html"));
 
 
-	//win.webContents.openDevTools();
+	win.webContents.openDevTools();
 }
 
 app.on("second-instance", () => {
