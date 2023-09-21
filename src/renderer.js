@@ -245,6 +245,7 @@ ipcRenderer.on("result", async (_event, { data }) => {
 			responses[id] = responses[id].replaceAll("\\b", "&nbsp;"); //no break space
 			responses[id] = responses[id].replaceAll("\\f", "&nbsp;"); //no break space
 			responses[id] = responses[id].replaceAll("\\r", "\n"); //sometimes /r is used in codeblocks
+			responses[id] = responses[id].replaceAll(/(\d+\..+)/g, "\n$1");
 
 			responses[id] = responses[id].replaceAll("\\n", "\n"); //convert line breaks back
 			responses[id] = responses[id].replaceAll("\\\n", "\n"); //convert line breaks back
@@ -252,7 +253,7 @@ ipcRenderer.on("result", async (_event, { data }) => {
 
 			responses[id] = responses[id].replaceAll(/\[name\]/gi, "Llama2");
 
-			responses[id] = responses[id].replaceAll(/(\d+\..+)/g, "\n$1");
+			
 			
 			
 
@@ -286,13 +287,13 @@ ipcRenderer.on("result", async (_event, { data }) => {
 
 document.querySelectorAll("#feed-placeholder-friendlychat .card").forEach((e) => {
 	e.addEventListener("click", () => {
-		let text = e.innerText.replace('"', "").replace('" â', "");
+		let text = e.innerText.replace('"', "").replace('" →', "");
 		input.value = text;
 	});
 });
 document.querySelectorAll("#feed-placeholder-friendlychat .card").forEach((e) => {
 	e.addEventListener("click", () => {
-		let text = e.innerText.replace('"', "").replace('" â', "");
+		let text = e.innerText.replace('"', "").replace('" →', "");
 		input.value = text;
 	});
 });
