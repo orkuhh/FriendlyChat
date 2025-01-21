@@ -8,40 +8,44 @@
   "main": "index.js",
   "icon": "icon/win/icon.ico",
   "scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "electron .",
-		"make-win": "npx electron-packager . --overwrite --platform=win32 --arch=x64 --icon=icon/win/icon.ico --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=release-builds  --version-string.CompanyName=MateuszP",
-		"pack-win": "npx electron-builder --win --config --publish=never --prepackaged \"release-builds/FriendlyChat-win32-x64\"",
-		"win": "rmdir /s /q release-builds dist && npm run make-win && npm run pack-win",
-		"make-mac-x64": "npx electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icon/mac/icon.icns --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=./release-builds  --version-string.CompanyName=MateuszP",
-		"make-mac-arm64": "npx electron-packager . --overwrite --platform=darwin --arch=arm64 --icon=icon/mac/icon.icns --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=./release-builds  --version-string.CompanyName=MateuszP",
-		"pack-mac-x64": "electron-installer-dmg \"release-builds/Friendly Chat-darwin-x64/Friendly Chat.app\" \"Friendly Chat\" --out=release-builds/dmg/x64 --icon=icon/mac/icon.icns --icon-size=128 --title=\"Friendly Chat\" --overwrite",
-		"pack-mac-arm64": "electron-installer-dmg \"release-builds/Friendly Chat-darwin-arm64/Friendly Chat.app\" \"Friendly Chat\" --out=release-builds/dmg/arm64 --icon=icon/mac/icon.icns --icon-size=128 --title=\"Friendly Chat\" --overwrite",
-		"mac-x64": "npm run make-mac-x64 && npm run pack-mac-x64",
-		"mac-arm64": "npm run make-mac-arm64 && npm run pack-mac-arm64",
-		"rebuild": ".\\node_modules\\.bin\\electron-rebuild",
-		"rebuild-linux": "npx --openssl_fips='' electron-rebuild",
-		"make-linux-x64": "npx electron-packager . --overwrite --platform=linux --arch=x64 --icon=icon/png/128x128.png --prune=true --electron-version=13.6.9 --app-copyright='MateuszP' --out=./release-builds  --version-string.CompanyName=MateuszP",
-		"pack-linux-x64": "tar czf release-builds/Friendly-Chat-linux-x64-vx.x.x.tar.gz \"release-builds/Friendly Chat-linux-x64\"",
-		"linux-x64": "npm run rebuild-linux && npm run make-linux-x64 && npm run pack-linux-x64"
-	},
-  
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build:css && electron .",
+    "build:css": "tailwindcss -i ./src/styles/main.css -o ./src/styles/output.css",
+    "watch:css": "tailwindcss -i ./src/styles/main.css -o ./src/styles/output.css --watch",
+    "make-win": "npx electron-packager . --overwrite --platform=win32 --arch=x64 --icon=icon/win/icon.ico --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=release-builds  --version-string.CompanyName=MateuszP",
+    "pack-win": "npx electron-builder --win --config --publish=never --prepackaged \"release-builds/FriendlyChat-win32-x64\"",
+    "win": "rmdir /s /q release-builds dist && npm run make-win && npm run pack-win",
+    "make-mac-x64": "npx electron-packager . --overwrite --platform=darwin --arch=x64 --icon=icon/mac/icon.icns --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=./release-builds  --version-string.CompanyName=MateuszP",
+    "make-mac-arm64": "npx electron-packager . --overwrite --platform=darwin --arch=arm64 --icon=icon/mac/icon.icns --prune=true --electron-version=13.6.9 --app-copyright=\"MateuszP\" --out=./release-builds  --version-string.CompanyName=MateuszP",
+    "pack-mac-x64": "electron-installer-dmg \"release-builds/Friendly Chat-darwin-x64/Friendly Chat.app\" \"Friendly Chat\" --out=release-builds/dmg/x64 --icon=icon/mac/icon.icns --icon-size=128 --title=\"Friendly Chat\" --overwrite",
+    "pack-mac-arm64": "electron-installer-dmg \"release-builds/Friendly Chat-darwin-arm64/Friendly Chat.app\" \"Friendly Chat\" --out=release-builds/dmg/arm64 --icon=icon/mac/icon.icns --icon-size=128 --title=\"Friendly Chat\" --overwrite",
+    "mac-x64": "npm run make-mac-x64 && npm run pack-mac-x64",
+    "mac-arm64": "npm run make-mac-arm64 && npm run pack-mac-arm64",
+    "rebuild": ".\\node_modules\\.bin\\electron-rebuild",
+    "rebuild-linux": "npx --openssl_fips='' electron-rebuild",
+    "make-linux-x64": "npx electron-packager . --overwrite --platform=linux --arch=x64 --icon=icon/png/128x128.png --prune=true --electron-version=13.6.9 --app-copyright='MateuszP' --out=./release-builds  --version-string.CompanyName=MateuszP",
+    "pack-linux-x64": "tar czf release-builds/Friendly-Chat-linux-x64-vx.x.x.tar.gz \"release-builds/Friendly Chat-linux-x64\"",
+    "linux-x64": "npm run rebuild-linux && npm run make-linux-x64 && npm run pack-linux-x64"
+  },
   "dependencies": {
-		"@electron/remote": "^2.0.9",
-		"@npmcli/fs": "^3.1.0",
-		"electron-store": "^8.1.0",
-		"express": "^4.18.2",
-		"node-pty-prebuilt-multiarch": "^0.10.1-pre.5",
-		"os-utils": "^0.0.14",
-		"path": "^0.12.7"
-	},
+    "@electron/remote": "^2.0.9",
+    "@npmcli/fs": "^3.1.0",
+    "electron-store": "^8.1.0",
+    "express": "^4.18.2",
+    "node-pty-prebuilt-multiarch": "^0.10.1-pre.5",
+    "os-utils": "^0.0.14",
+    "path": "^0.12.7"
+  },
   "devDependencies": {
-		"@electron/rebuild": "^3.2.10",
-		"electron": "^13.6.9",
-		"electron-builder": "^23.6.0",
-		"electron-packager": "^17.1.1"
-	},
-	"nsis": {
-		"packElevateHelper": false
-	  }
+    "@electron/rebuild": "^3.2.10",
+    "autoprefixer": "^10.4.20",
+    "electron": "^13.6.9",
+    "electron-builder": "^23.6.0",
+    "electron-packager": "^17.1.1",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
+  },
+  "nsis": {
+    "packElevateHelper": false
+  }
 }

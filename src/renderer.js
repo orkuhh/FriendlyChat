@@ -9,6 +9,7 @@ document.onreadystatechange = (event) => {
     ipcRenderer.send("os");
     if (document.readyState === "complete") {
         handleWindowControls();
+        setupDialogHandlers();
     }
     document.querySelector(".secondary").style.display = "none";
     document.querySelector(".dialog-title h3").innerText = "Couldn't load model";
@@ -28,14 +29,43 @@ ipcRenderer.on("modelPathValid", (_event, { data }) => {
 	}
 });
 
-document.querySelector("#path-dialog-bg > div > div.dialog-button > button.primary").addEventListener("click", () => {
-	var path = document.querySelector("#path-dialog input[type=text]").value.replaceAll('"', "");
-	ipcRenderer.send("checkPath", { data: path });
-});
+function setupDialogHandlers() {
+	// Change model button
+	document.getElementById('change-model').addEventListener('click', () => {
+		document.getElementById('path-dialog-bg').classList.remove('hidden');
+	});
 
-document.querySelector("#path-dialog-bg > div > div.dialog-button > button.secondary").addEventListener("click", () => {
-	document.getElementById("path-dialog-bg").classList.add("hidden");
-});
+	// Dialog buttons
+	const dialogButtons = document.querySelectorAll('#path-dialog-bg button');
+	dialogButtons.forEach(button => {
+		if (button.classList.contains('btn-primary') && !button.classList.contains('browse')) {
+			// Confirm button
+			button.addEventListener('click', () => {
+				const path = document.querySelector("#path-dialog input[type=text]").value.replaceAll('"', "");
+				ipcRenderer.send("checkPath", { data: path });
+			});
+		} else if (button.classList.contains('btn-secondary')) {
+			// Cancel button
+			button.addEventListener('click', () => {
+				document.getElementById('path-dialog-bg').classList.add('hidden');
+			});
+		} else if (button.classList.contains('btn-primary')) {
+			// Browse button
+			button.addEventListener('click', () => {
+				ipcRenderer.send("pickFile");
+			});
+		}
+	});
+
+	// Input enter key handler
+	document.querySelector("#path-dialog input[type=text]").addEventListener("keypress", (e) => {
+		if (e.keyCode === 13) {
+			e.preventDefault();
+			const confirmButton = document.querySelector("#path-dialog-bg button.btn-primary:not(.browse)");
+			confirmButton.click();
+		}
+	});
+}
 
 ipcRenderer.on("pathIsValid", (_event, { data }) => {
 	console.log(data);
@@ -48,22 +78,12 @@ ipcRenderer.on("pathIsValid", (_event, { data }) => {
 	}
 });
 
-document.querySelector("#path-dialog > div > button").addEventListener("click", () => {
-	ipcRenderer.send("pickFile");
-});
 ipcRenderer.on("pickedFile", (_error, { data }) => {
 	document.querySelector("#path-dialog input[type=text]").value = data;
 });
 
 ipcRenderer.on("currentModel", (_event, { data }) => {
 	document.querySelector("#path-dialog input[type=text]").value = data;
-});
-
-document.querySelector("#path-dialog input[type=text]").addEventListener("keypress", (e) => {
-	if (e.keyCode === 13) {
-		e.preventDefault();
-		document.querySelector("#path-dialog-bg .dialog-button button.primary").click();
-	}
 });
 
 window.onbeforeunload = (event) => {
@@ -298,40 +318,78 @@ document.querySelectorAll("#feed-placeholder-friendlychat .card").forEach((e) =>
 });
 
 //Resources
+const cpuText = document.querySelector("#cpu .info");
+const ramText = document.querySelector("#ram .info");
+const cpuBar = document.querySelector("#cpu .resource-bar-inner");
+const ramBar = document.querySelector("#ram .resource-bar-inner");
 
-const cpuText = document.querySelector("#cpu .text");
-const ramText = document.querySelector("#ram .text");
-const cpuBar = document.querySelector("#cpu .bar-inner");
-const ramBar = document.querySelector("#ram .bar-inner");
+let cpuCount = 0;
+let threadUtilized = 0;
+let totalmem = 0;
+let cpuPercent = 0;
+let freemem = 0;
 
-var cpuCount, threadUtilized, totalmem, cpuPercent, freemem;
+// Get initial values
 ipcRenderer.send("cpuCount");
 ipcRenderer.send("threadUtilized");
 ipcRenderer.send("totalmem");
+
+// CPU Count listener
 ipcRenderer.on("cpuCount", (_event, { data }) => {
-	cpuCount = data;
-});
-ipcRenderer.on("threadUtilized", (_event, { data }) => {
-	threadUtilized = data;
-});
-ipcRenderer.on("totalmem", (_event, { data }) => {
-	totalmem = Math.round(data / 102.4) / 10;
+    cpuCount = data;
+    updateCPUText();
 });
 
-setInterval(async () => {
-	ipcRenderer.send("cpuUsage");
-	ipcRenderer.send("freemem");
+// Thread Utilization listener
+ipcRenderer.on("threadUtilized", (_event, { data }) => {
+    threadUtilized = data;
+    updateCPUText();
+});
+
+// Total Memory listener
+ipcRenderer.on("totalmem", (_event, { data }) => {
+    totalmem = Math.round(data / 102.4) / 10;
+    updateRAMText();
+});
+
+// Update resource info every 1.5 seconds
+setInterval(() => {
+    ipcRenderer.send("cpuUsage");
+    ipcRenderer.send("freemem");
 }, 1500);
+
+// CPU Usage listener
 ipcRenderer.on("cpuUsage", (_event, { data }) => {
-	cpuPercent = Math.round(data * 100);
-	cpuText.innerText = `CPU: ${cpuPercent}%, ${threadUtilized}/${cpuCount} threads`;
-	cpuBar.style.transform = `scaleX(${cpuPercent / 100})`;
+    cpuPercent = Math.round(data * 100);
+    updateCPUText();
+    updateCPUBar();
 });
+
+// Free Memory listener
 ipcRenderer.on("freemem", (_event, { data }) => {
-	freemem = data;
-	ramText.innerText = `RAM: ${Math.round((totalmem - freemem) * 10) / 10}GB/${totalmem}GB`;
-	ramBar.style.transform = `scaleX(${(totalmem - freemem) / totalmem})`;
+    freemem = data;
+    updateRAMText();
+    updateRAMBar();
 });
+
+// Helper functions to update UI
+function updateCPUText() {
+    cpuText.textContent = `CPU: ${cpuPercent}%, ${threadUtilized}/${cpuCount} threads`;
+}
+
+function updateRAMText() {
+    const usedMem = Math.round((totalmem - freemem) * 10) / 10;
+    ramText.textContent = `RAM: ${usedMem.toFixed(1)}GB/${totalmem.toFixed(1)}GB`;
+}
+
+function updateCPUBar() {
+    cpuBar.style.transform = `scaleX(${cpuPercent / 100})`;
+}
+
+function updateRAMBar() {
+    const usageRatio = (totalmem - freemem) / totalmem;
+    ramBar.style.transform = `scaleX(${usageRatio})`;
+}
 
 document.getElementById("clear").addEventListener("click", () => {
 	input.value = "";
@@ -365,14 +423,11 @@ document.getElementById("change-model").addEventListener("click", () => {
 	document.getElementById("path-dialog-bg").classList.remove("hidden");
 });
 
-
-
 //Hiding the placeholder when typing
 
 const inputm = document.getElementById('input');
 const placeholder = document.getElementById('feed-placeholder-friendlychat');
 const clearChatButton = document.getElementById('clear-chat');
-const autocomplete = document.getElementById('autocomplete');
 
 inputm.addEventListener('keyup', () => {
 	if (inputm.value.trim().length > 0) {
@@ -386,7 +441,60 @@ clearChatButton.addEventListener('click', () => {
 	placeholder.classList.remove('hidden');
 });
 
-autocomplete.addEventListener('click', () => {
-	placeholder.classList.add('hidden');
+// Dropdown Menu
+const menuButton = document.getElementById('menu-button');
+const dropdownMenu = document.getElementById('dropdown-menu');
+const changeModelBtn = document.getElementById('change-model');
+const clearChatBtn = document.getElementById('clear-chat');
+
+// Toggle dropdown
+menuButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('show');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!dropdownMenu.contains(e.target) && !menuButton.contains(e.target)) {
+        dropdownMenu.classList.remove('show');
+    }
+});
+
+// Close dropdown when pressing escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        dropdownMenu.classList.remove('show');
+    }
+});
+
+// Handle menu item clicks
+changeModelBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropdownMenu.classList.remove('show');
+    ipcRenderer.send("getCurrentModel");
+    document.querySelector("#path-dialog-bg > div > div.dialog-button > button.secondary").style.display = "";
+    document.querySelector("#path-dialog-bg > div > div.dialog-title > h3").innerText = "Change model path";
+    document.getElementById("path-dialog-bg").classList.remove("hidden");
+});
+
+clearChatBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropdownMenu.classList.remove('show');
+    stopButton.click();
+    stopButton.removeAttribute("disabled");
+    const messages = document.querySelectorAll("#messages li");
+    for (const element of messages) {
+        element.remove();
+    }
+    setTimeout(() => {
+        const remainingMessages = document.querySelectorAll("#messages li");
+        for (const element of remainingMessages) {
+            element.remove();
+        }
+    }, 100);
+    placeholder.classList.remove('hidden');
 });
 

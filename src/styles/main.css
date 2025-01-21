@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --header-height: 7rem;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2;
+  }
+  
+  .btn-primary {
+    @apply bg-indigo-500 text-white hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-500/25;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-500 text-white hover:bg-gray-600 hover:shadow-lg hover:shadow-gray-500/25;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/25;
+  }
+
+  /* Dropdown Menu */
+  .dropdown {
+    @apply relative inline-block;
+    -webkit-app-region: no-drag;
+  }
+
+  .dropdown-button {
+    @apply flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 
+           hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer;
+    -webkit-app-region: no-drag;
+  }
+
+  .dropdown-content {
+    @apply absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg 
+           border dark:border-gray-700 py-1 z-[100] transform opacity-0 scale-95 invisible
+           transition-all duration-200 origin-top-right;
+    -webkit-app-region: no-drag;
+  }
+
+  .dropdown-content.show {
+    @apply opacity-100 scale-100 visible;
+  }
+
+  .dropdown-item {
+    @apply flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 
+           hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer;
+    -webkit-app-region: no-drag;
+  }
+
+  .dropdown-item.danger {
+    @apply text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20;
+  }
+
+  .dropdown-divider {
+    @apply my-1 border-t dark:border-gray-700;
+  }
+
+  .resource-bar {
+    @apply w-32 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden;
+  }
+
+  .resource-bar-inner {
+    @apply h-full origin-left transform transition-transform duration-300;
+  }
+
+  .titlebar-button {
+    @apply w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 
+           hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors;
+  }
+}
+
+/* Modern Chat Interface */
+.chat-container {
+  @apply flex flex-col h-full;
+}
+
+.message-list {
+  @apply flex-1 overflow-y-auto space-y-4 p-6;
+}
+
+.message {
+  @apply max-w-2xl mx-auto flex gap-3 items-start;
+}
+
+.message-content {
+  @apply flex-1 rounded-2xl px-4 py-3 shadow-sm;
+}
+
+.bot-msg .message-content {
+  @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200;
+}
+
+.user-msg {
+  @apply justify-end;
+}
+
+.user-msg .message-content {
+  @apply bg-indigo-500 text-white;
+}
+
+/* Resource Monitoring */
+.resource-monitor {
+  @apply flex items-center gap-8 px-4 py-2;
+}
+
+.resource-item {
+  @apply flex flex-col gap-1.5;
+}
+
+.resource-label {
+  @apply text-sm font-medium text-gray-600 dark:text-gray-300;
+}
+
+#cpu .resource-bar-inner {
+  @apply bg-emerald-500;
+}
+
+#ram .resource-bar-inner {
+  @apply bg-indigo-500;
+}
+
+/* Window Controls */
+#titlebar {
+  -webkit-app-region: drag;
+  @apply select-none bg-white dark:bg-gray-900 border-b dark:border-gray-800;
+}
+
+#window-controls {
+  -webkit-app-region: no-drag;
+  @apply flex items-center gap-1;
+}
+
+.window-button {
+  @apply w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+         text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+}
+
+#close-button {
+  @apply hover:bg-red-500 hover:text-white dark:hover:bg-red-500;
+}
+
+/* Input Area */
+.input-area {
+  @apply border-t dark:border-gray-800 bg-white dark:bg-gray-900 p-4;
+}
+
+.input-container {
+  @apply max-w-4xl mx-auto relative;
+}
+
+.input-field {
+  @apply relative flex items-end gap-2;
+}
+
+textarea {
+  @apply w-full rounded-xl px-4 py-3 pr-32 bg-gray-100 dark:bg-gray-800 
+         border-0 focus:ring-2 focus:ring-indigo-500 resize-none
+         text-gray-700 dark:text-gray-200 placeholder-gray-400
+         transition-all duration-200;
+  min-height: 44px;
+  max-height: 200px;
+}
+
+.action-button {
+  @apply p-2 rounded-lg transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700;
+}
+
+.action-button svg {
+  @apply transition-transform duration-200;
+}
+
+.action-button:hover svg {
+  @apply scale-110;
+}
+
+.action-button:active svg {
+  @apply scale-95;
+}
+
+/* Dialog/Modal */
+.dialog-bg {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50
+         transition-opacity duration-200;
+}
+
+.dialog-content {
+  @apply bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-md w-full mx-4
+         transform transition-all duration-200;
+}
+
+.dialog-header {
+  @apply p-6 border-b dark:border-gray-800;
+}
+
+.dialog-body {
+  @apply p-6 space-y-4;
+}
+
+.dialog-footer {
+  @apply p-6 border-t dark:border-gray-800 flex justify-end gap-3;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+/* Resource monitoring */
+#resources {
+  @apply flex items-center space-x-6;
+}
+
+#resources .info {
+  @apply text-sm text-gray-600 dark:text-gray-300 mb-1;
+}
+
+/* Hide scrollbar but keep functionality */
+#messages {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+#messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#messages::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+/* Dialog styles */
+.dialog-bg.hidden {
+  display: none !important;
+}
+
+.dialog-content input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-right: 8px;
+}
+
+/* Essential form styles */
+#form textarea {
+  @apply w-full resize-none;
+}
+
+/* Action buttons */
+#clear-chat,
+#change-model {
+  cursor: pointer;
+  user-select: none;
+} 

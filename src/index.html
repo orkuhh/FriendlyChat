@@ -6,97 +6,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
     <title>FriendlyChat</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="titlebar.css" />
+    <link rel="stylesheet" href="styles/output.css" />
 </head>
-<body>
-    <header id="titlebar">
-        <div id="drag-region">
-            <div id="window-title">
-                <span>FriendlyChat</span>
-            </div>
-            <div id="window-controls">
-                <div class="button" id="min-button"></div>
-                <div class="button" id="max-button"></div>
-                <div class="button" id="restore-button"></div>
-                <div class="button" id="close-button"></div>
-            </div>
-        </div>
-        <div class="form-header">
-            <div class="action-button" id="clear-chat">Clear chat</div>
-            <div class="action-button" id="change-model">Change model</div>
-            
-        
-            <div id="resources">
-                <div id="cpu" class="resource-item">
-                    <div class="text info">CPU: --%, -- cores</div>
-                    <div class="bar">
-                        <div class="bar-inner"></div>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <!-- Titlebar -->
+    <header id="titlebar" class="fixed top-0 left-0 right-0 z-50">
+        <div class="flex items-center justify-between h-12 px-4">
+            <div class="flex items-center gap-3">
+                <span class="text-lg font-semibold select-none">FriendlyChat</span>
+                <div class="dropdown">
+                    <button type="button" id="menu-button" class="dropdown-button">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                        <span>Menu</span>
+                    </button>
+                    <div id="dropdown-menu" class="dropdown-content">
+                        <button type="button" id="change-model" class="dropdown-item">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                            </svg>
+                            <span>Change Model</span>
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" id="clear-chat" class="dropdown-item danger">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            <span>Reload App</span>
+                        </button>
                     </div>
                 </div>
-                <div id="ram" class="resource-item">
-                    <div class="text info">RAM: --GB/--GB</div>
-                    <div class="bar">
-                        <div class="bar-inner"></div>
+            </div>
+            
+            <!-- Resource Monitor -->
+            <div class="flex items-center gap-12">
+                <div id="resources" class="flex items-center gap-8">
+                    <div id="cpu" class="resource-item">
+                        <div class="resource-label info">CPU: --%, -- cores</div>
+                        <div class="resource-bar">
+                            <div class="resource-bar-inner"></div>
+                        </div>
                     </div>
+                    <div id="ram" class="resource-item">
+                        <div class="resource-label info">RAM: --GB/--GB</div>
+                        <div class="resource-bar">
+                            <div class="resource-bar-inner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Window Controls -->
+                <div id="window-controls" class="flex items-center gap-1">
+                    <button id="min-button" class="window-button">−</button>
+                    <button id="max-button" class="window-button">□</button>
+                    <button id="restore-button" class="window-button hidden">❐</button>
+                    <button id="close-button" class="window-button">×</button>
                 </div>
             </div>
         </div>
     </header>
-    <div id="main">
-        <div id="feed">
-            <ul id="messages">
-                <!-- Begin placeholder chat -->
-                <div id="feed-placeholder-friendlychat">
-                    <h1 class="logo">FriendlyChat</h1>
-                    <div class="columns">
-                        <div class="column">
-                            <h3>Examples</h3>
-                            <button class="card">"What are some healthy breakfast options?" →</button>
-                            <button class="card">"Recommend a book for learning web development." →</button>
-                            <button class="card">"Tell me a joke about computer programming." →</button>
+
+    <!-- Main Content -->
+    <main class="pt-12 h-screen">
+        <div class="h-full bg-white dark:bg-gray-900 shadow-lg relative">
+            <!-- Messages Container -->
+            <div id="messages" class="h-[calc(100%-8rem)] overflow-y-auto p-6 space-y-4">
+                <!-- Welcome Screen -->
+                <div id="feed-placeholder-friendlychat" class="text-center py-12">
+                    <div class="max-w-2xl mx-auto space-y-8">
+                        <h1 class="text-4xl font-bold text-gray-900 dark:text-white">FriendlyChat</h1>
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-medium text-gray-700 dark:text-gray-300">Examples</h3>
+                            <div class="space-y-3">
+                                <button class="card w-full btn btn-primary justify-start text-left">
+                                    "What are some healthy breakfast options?" →
+                                </button>
+                                <button class="card w-full btn btn-primary justify-start text-left">
+                                    "Recommend a book for learning web development." →
+                                </button>
+                                <button class="card w-full btn btn-primary justify-start text-left">
+                                    "Tell me a joke about computer programming." →
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- end of placeholder chat -->
-            </ul>
+            </div>
             <div id="bottom"></div>
-            <form id="form" action="">
-                <div class="input-container">
-                    <div class="loading hidden info"></div>
-                    <div class="input-field">
-                        <textarea id="input" maxlength="2048" rows="1" placeholder="Enter a message..."></textarea>
-                        <button id="clear"></button>
-                        <button id="autocomplete"></button>
-                        <button id="stop"></button>
+
+            <!-- Input Area -->
+            <form id="form" class="absolute bottom-0 left-0 right-0 p-6 bg-white dark:bg-gray-900 border-t dark:border-gray-800">
+                <div class="max-w-4xl mx-auto">
+                    <div class="loading hidden text-sm text-gray-500 mb-2"></div>
+                    <div class="relative">
+                        <textarea 
+                            id="input"
+                            maxlength="2048"
+                            rows="1"
+                            placeholder="Enter a message..."
+                            class="w-full rounded-xl px-4 py-3 pr-32 bg-gray-100 dark:bg-gray-800 
+                                   border-0 focus:ring-2 focus:ring-indigo-500 resize-none
+                                   text-gray-700 dark:text-gray-200 placeholder-gray-400"
+                        ></textarea>
+                        <div class="absolute right-2 bottom-2 flex items-center gap-2">
+                            <button 
+                                type="button" 
+                                id="clear" 
+                                class="action-button text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors"
+                                title="Clear input"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                            <button 
+                                type="button" 
+                                id="stop" 
+                                class="action-button text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white transition-colors"
+                                title="Stop generation"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                                </svg>
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="action-button text-gray-400 hover:text-indigo-500 dark:text-gray-500 dark:hover:text-indigo-400 transition-colors"
+                                title="Send message"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Press Shift + Enter for multiple lines</span>
                     </div>
                 </div>
-                <div class="info">TIP: shift + enter for multiple lines</div>
             </form>
         </div>
-    </div>
+    </main>
+
+    <!-- Path Dialog -->
     <div id="path-dialog-bg" class="dialog-bg hidden">
-        <div class="dialog-box">
-            <div class="dialog-title">
-                <h3>Couldn't load model</h3>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3 class="text-xl font-semibold">Couldn't load model</h3>
             </div>
-            <div id="path-dialog" class="dialog-content">
-                <p>Enter the filepath for a LLaMA model.</p>
-                <p>You can change the model type in settings.</p>
-                <div style="display: flex; gap: 8px">
-                    <input type="text" />
-                    <button class="primary"></button>
+            <div id="path-dialog" class="dialog-body">
+                <p class="text-gray-600 dark:text-gray-300">Enter the filepath for a LLaMA model.</p>
+                <p class="text-gray-600 dark:text-gray-300">You can change the model type in settings.</p>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        class="flex-1 px-3 py-2 rounded-lg border dark:border-gray-700 
+                               bg-gray-100 dark:bg-gray-800 focus:outline-none focus:ring-2 
+                               focus:ring-indigo-500 text-gray-900 dark:text-gray-100"
+                    />
+                    <button type="button" class="btn btn-primary browse">Browse</button>
                 </div>
-                <p class="error-text" style="display: none">Invalid file path</p>
+                <p class="error-text text-red-500 hidden">Invalid file path</p>
             </div>
-            <div class="dialog-button">
-                <button class="secondary">Cancel</button>
-                <button class="primary">Confirm</button>
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+                <button type="button" class="btn btn-primary">Confirm</button>
             </div>
         </div>
     </div>
-    <div id="snackbar" class="hidden"></div>
-	<script src="socket.io.js"></script>
+
+    <!-- Snackbar -->
+    <div id="snackbar" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 
+                              bg-gray-900 text-white rounded-lg shadow-lg hidden 
+                              transform transition-all duration-300">
+    </div>
+
+    <script src="socket.io.js"></script>
     <script src="renderer.js"></script>
 </body>
 </html>
+
